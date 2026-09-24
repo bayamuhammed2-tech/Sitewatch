@@ -1,0 +1,545 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account | SiteWatch</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:             #0a0f1a;
+    --bg-raised:      #0e1524;
+    --surface:        rgba(255,255,255,0.045);
+    --surface-strong:rgba(255,255,255,0.075);
+    --border:         rgba(255,255,255,0.09);
+    --border-strong: rgba(255,255,255,0.16);
+
+    --ink:           #e9edf6;
+    --ink-dim:       #8f9ab0;
+    --ink-faint:     #5b6478;
+
+    --amber:         #f5a623;
+    --amber-dim:     rgba(245,166,35,0.14);
+    --cyan:          #43c9e0;
+    --cyan-dim:      rgba(67,201,224,0.14);
+
+    --danger:        #f87171;
+    --danger-dim:    rgba(248,113,113,0.1);
+    --ease: cubic-bezier(.22,1,.36,1);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
+  h1,h2,.display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.02em; }
+
+  html{ background:var(--bg); }
+
+  body{
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg);
+    color:var(--ink);
+    padding:40px 16px;
+    position:relative;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  /* ============================================================
+     BACKGROUND — same field as the homepage
+     ============================================================ */
+  .bg-field{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  .bp-grid{
+    position:absolute; inset:-10%;
+    background-image:
+      linear-gradient(rgba(140,160,200,0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(140,160,200,0.055) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 60% 55% at 50% 35%, black 25%, transparent 75%);
+    -webkit-mask-image:radial-gradient(ellipse 60% 55% at 50% 35%, black 25%, transparent 75%);
+  }
+  .glow{ position:absolute; border-radius:50%; filter:blur(100px); transition:transform 1.2s var(--ease); }
+  .glow-amber{ width:480px; height:480px; background:radial-gradient(circle, var(--amber) 0%, transparent 70%); top:-140px; right:6%; opacity:0.15; }
+  .glow-cyan{ width:420px; height:420px; background:radial-gradient(circle, var(--cyan) 0%, transparent 70%); bottom:-100px; left:2%; opacity:0.12; }
+
+  /* ============================================================
+     CONTAINER
+     ============================================================ */
+  .container{ position:relative; z-index:1; width:100%; max-width:460px; perspective:1400px; }
+
+  .back-link{
+    display:inline-flex; align-items:center; gap:6px;
+    color:var(--ink-faint); text-decoration:none; font-size:13.5px;
+    margin-bottom:16px; transition:color .25s var(--ease), gap .25s var(--ease);
+  }
+  .back-link:hover{ color:var(--amber); gap:9px; }
+
+  .card{
+    background:linear-gradient(165deg, rgba(255,255,255,0.055), rgba(255,255,255,0.02));
+    border:1px solid var(--border-strong);
+    border-radius:22px;
+    padding:40px;
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    box-shadow:0 30px 80px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
+    transform-style:preserve-3d;
+  }
+
+  /* ---------- logo ---------- */
+  .logo-row{ display:flex; flex-direction:column; align-items:center; margin-bottom:6px; }
+  .logo-mark{
+    width:46px; height:46px; border-radius:12px; margin-bottom:16px;
+    background:linear-gradient(145deg, #ffc25c, var(--amber));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:21px; color:#1a1206;
+    box-shadow:0 0 28px rgba(245,166,35,0.38), inset 0 1px 0 rgba(255,255,255,0.35);
+  }
+  .logo{ font-size:25px; font-weight:600; color:var(--ink); font-family:'Space Grotesk',sans-serif; text-align:center; }
+  .logo b{ color:var(--amber); font-weight:600; }
+
+  .subtitle{ text-align:center; color:var(--ink-dim); font-size:14.5px; margin-bottom:30px; margin-top:8px; }
+
+  /* ---------- top-level / non-field error ---------- */
+  .error{
+    background:var(--danger-dim);
+    border:1px solid rgba(248,113,113,0.28);
+    color:var(--danger);
+    padding:12px 14px;
+    border-radius:10px;
+    margin-bottom:20px;
+    font-size:13.5px;
+  }
+
+  /* ---------- fields ---------- */
+  .form-group{ margin-bottom:19px; position:relative; }
+
+  label{
+    display:block; margin-bottom:8px;
+    font-weight:600; font-size:13.5px; color:var(--ink-dim);
+  }
+
+  input, select{
+    width:100%;
+    padding:13px 15px;
+    border:1px solid var(--border-strong);
+    border-radius:10px;
+    font-size:15px;
+    background:rgba(255,255,255,0.03);
+    color:var(--ink);
+    outline:none;
+    transition:border-color .25s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease);
+  }
+
+  input::placeholder{ color:var(--ink-faint); }
+
+  input:focus, select:focus{
+    border-color:var(--amber);
+    background:rgba(255,255,255,0.05);
+    box-shadow:0 0 0 3px rgba(245,166,35,0.14);
+  }
+
+  input:hover, select:hover{ border-color:rgba(255,255,255,0.24); }
+
+  select{
+    appearance:none; -webkit-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238f9ab0' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 15px center;
+    padding-right:38px;
+    cursor:pointer;
+  }
+  select option{ background:#0e1524; color:var(--ink); }
+
+  /* ---------- password toggle wrapper & button ---------- */
+  .password-wrapper{
+    position:relative;
+    width:100%;
+  }
+
+  .password-wrapper input{
+    padding-right:45px;
+  }
+
+  .toggle-password{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    background:transparent;
+    border:none;
+    padding:6px;
+    color:var(--ink-faint);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    transition:color .2s var(--ease);
+    z-index:2;
+  }
+
+  .toggle-password:hover{
+    color:var(--amber);
+  }
+
+  .toggle-password svg{
+    width:18px;
+    height:18px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+
+  .help-text{
+    display:block; margin-top:7px;
+    font-size:12px; color:var(--ink-faint); line-height:1.5;
+  }
+
+  .field-error{
+    color:var(--danger);
+    font-size:12.5px;
+    margin-top:7px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .field-error::before{
+    content:'!'; display:inline-flex; align-items:center; justify-content:center;
+    width:14px; height:14px; border-radius:50%;
+    background:rgba(248,113,113,0.18); color:var(--danger);
+    font-size:10px; font-weight:700; flex:none;
+  }
+
+  /* ---------- submit ---------- */
+  button[type="submit"]{
+    width:100%;
+    padding:15px;
+    margin-top:8px;
+    border:none;
+    border-radius:11px;
+    background:linear-gradient(145deg, #ffc25c, var(--amber));
+    color:#1a1206;
+    font-size:15.5px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 8px 26px rgba(245,166,35,0.3);
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+    position:relative;
+    overflow:hidden;
+  }
+  button[type="submit"]::before{
+    content:'';
+    position:absolute; top:0; left:-60%;
+    width:40%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
+    transform:skewX(-20deg);
+    transition:left .7s var(--ease);
+  }
+  button[type="submit"]:hover{ transform:translateY(-2px); box-shadow:0 12px 32px rgba(245,166,35,0.44); }
+  button[type="submit"]:hover::before{ left:130%; }
+  button[type="submit"]:active{ transform:translateY(0); }
+
+  .login-link{
+    text-align:center; margin-top:26px;
+    color:var(--ink-dim); font-size:14px;
+  }
+  .login-link a{
+    color:var(--amber); text-decoration:none; font-weight:600;
+    border-bottom:1px solid transparent;
+    transition:border-color .25s var(--ease);
+  }
+  .login-link a:hover{ border-color:var(--amber); }
+
+  @media (max-width:500px){
+    .card{ padding:30px 24px; }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="bg-field">
+  <div class="bp-grid" id="bpGrid"></div>
+  <div class="glow glow-amber" id="glowA"></div>
+  <div class="glow glow-cyan" id="glowB"></div>
+</div>
+
+<div class="container">
+
+  <a href="{% url 'home' %}" class="back-link" data-el>← Back to SiteWatch</a>
+
+  <div class="card" id="authCard">
+
+    <div class="logo-row" data-el>
+      <div class="logo-mark">S</div>
+      <div class="logo">Site<b>Watch</b></div>
+    </div>
+
+    <p class="subtitle" data-el>Create your SiteWatch account</p>
+
+    {% if form.non_field_errors %}
+      <div class="error" data-el>
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <form method="POST">
+
+      {% csrf_token %}
+
+      <!-- Username -->
+      <div class="form-group" data-el>
+        <label for="id_username">Username</label>
+
+        <input
+          type="text"
+          name="username"
+          id="id_username"
+          class="form-input"
+          placeholder="Enter your username"
+          value="{{ form.username.value|default:'' }}"
+          required
+        >
+
+        {% if form.username.errors %}
+          <div class="field-error">
+            {{ form.username.errors }}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Email -->
+      <div class="form-group" data-el>
+        <label for="id_email">Email address</label>
+
+        <input
+          type="email"
+          name="email"
+          id="id_email"
+          class="form-input"
+          placeholder="Enter your email address"
+          value="{{ form.email.value|default:'' }}"
+          required
+        >
+
+        {% if form.email.errors %}
+          <div class="field-error">
+            {{ form.email.errors }}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Account Type -->
+      <div class="form-group" data-el>
+
+        <label for="id_role">Account type</label>
+
+        <select
+          name="role"
+          id="id_role"
+          class="form-input"
+          required
+        >
+          <option value="">Select account type</option>
+
+          <option value="WORKER"
+            {% if form.role.value == "WORKER" %}
+              selected
+            {% endif %}
+          >
+            Worker
+          </option>
+
+          <option value="COMPANY_ADMIN"
+            {% if form.role.value == "COMPANY_ADMIN" %}
+              selected
+            {% endif %}
+          >
+            Company
+          </option>
+        </select>
+
+        <span class="help-text">
+          Choose Worker if you are looking for construction jobs,
+          or Company if you want to hire workers and manage projects.
+        </span>
+
+        {% if form.role.errors %}
+          <div class="field-error">
+            {{ form.role.errors }}
+          </div>
+        {% endif %}
+
+      </div>
+
+      <!-- Password -->
+      <div class="form-group" data-el>
+
+        <label for="id_password1">Password</label>
+
+        <div class="password-wrapper">
+          <input
+            type="password"
+            name="password1"
+            id="id_password1"
+            class="form-input"
+            placeholder="Create a password"
+            required
+          >
+          <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+            <!-- Eye Off Icon (default) -->
+            <svg class="eye-off" viewBox="0 0 24 24">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+            <!-- Eye On Icon (hidden by default) -->
+            <svg class="eye-on" viewBox="0 0 24 24" style="display:none;">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+
+        {% if form.password1.errors %}
+          <div class="field-error">
+            {{ form.password1.errors }}
+          </div>
+        {% endif %}
+
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group" data-el>
+
+        <label for="id_password2">Confirm password</label>
+
+        <div class="password-wrapper">
+          <input
+            type="password"
+            name="password2"
+            id="id_password2"
+            class="form-input"
+            placeholder="Confirm your password"
+            required
+          >
+          <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+            <!-- Eye Off Icon (default) -->
+            <svg class="eye-off" viewBox="0 0 24 24">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+            <!-- Eye On Icon (hidden by default) -->
+            <svg class="eye-on" viewBox="0 0 24 24" style="display:none;">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+
+        {% if form.password2.errors %}
+          <div class="field-error">
+            {{ form.password2.errors }}
+          </div>
+        {% endif %}
+
+      </div>
+
+      <button type="submit" data-el>Create Account</button>
+
+    </form>
+
+    <div class="login-link" data-el>
+      Already have an account?
+      <a href="{% url 'login' %}">Login</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function(){
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var isTouch = window.matchMedia('(pointer: coarse)').matches;
+  var hasGSAP = typeof gsap !== 'undefined';
+
+  /* ---------- entrance sequence ---------- */
+  if (hasGSAP && !reduceMotion) {
+    gsap.set('#authCard', { opacity: 0, y: 26, scale: 0.97, rotateX: 4 });
+    gsap.set('[data-el]', { opacity: 0, y: 14 });
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.to('#authCard', { opacity: 1, y: 0, scale: 1, rotateX: 0, duration: 0.85 })
+      .to('[data-el]', { opacity: 1, y: 0, duration: 0.55, stagger: 0.06 }, '-=0.45');
+  } else if (hasGSAP) {
+    gsap.set(['#authCard', '[data-el]'], { opacity: 1, y: 0, scale: 1, rotateX: 0 });
+  }
+
+  /* ---------- gentle card tilt + glow drift, following the cursor ---------- */
+  if (!reduceMotion && !isTouch && hasGSAP) {
+    var card = document.getElementById('authCard');
+    var glowA = document.getElementById('glowA');
+    var glowB = document.getElementById('glowB');
+
+    document.addEventListener('mousemove', function(e){
+      var px = (e.clientX / window.innerWidth) - 0.5;
+      var py = (e.clientY / window.innerHeight) - 0.5;
+
+      gsap.to(card, {
+        rotateY: px * 6,
+        rotateX: -py * 6,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+
+      gsap.to(glowA, { x: px * 40, y: py * 30, duration: 1.2, ease: 'power2.out' });
+      gsap.to(glowB, { x: -px * 30, y: -py * 25, duration: 1.2, ease: 'power2.out' });
+    });
+
+    document.addEventListener('mouseleave', function(){
+      gsap.to(card, { rotateY: 0, rotateX: 0, duration: 0.6, ease: 'power2.out' });
+    });
+  }
+
+  /* ---------- field focus micro-lift ---------- */
+  document.querySelectorAll('.form-group input, .form-group select').forEach(function(el){
+    el.addEventListener('focus', function(){
+      var group = el.closest('.form-group');
+      if (hasGSAP && !reduceMotion) {
+        gsap.to(group, { x: 3, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 });
+      }
+    });
+  });
+
+  /* ---------- password toggle functionality ---------- */
+  document.querySelectorAll('.toggle-password').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var input = btn.parentElement.querySelector('input');
+      var eyeOff = btn.querySelector('.eye-off');
+      var eyeOn = btn.querySelector('.eye-on');
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeOff.style.display = 'none';
+        eyeOn.style.display = 'block';
+      } else {
+        input.type = 'password';
+        eyeOff.style.display = 'block';
+        eyeOn.style.display = 'none';
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

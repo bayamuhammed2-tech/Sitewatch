@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ project.name }} | SiteWatch
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b1120;
+            color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 45px 20px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #94a3b8;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #f59e0b;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin: 0 0 10px;
+            font-size: 38px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #94a3b8;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns:
+                1fr 1fr;
+            gap: 22px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 18px;
+            padding: 25px;
+        }
+
+        .card h2 {
+            margin: 0 0 20px;
+            font-size: 22px;
+        }
+
+        .info {
+            margin-bottom: 18px;
+        }
+
+        .label {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            color: #e2e8f0;
+            font-size: 16px;
+        }
+
+        .company {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            background: #172554;
+            color: #93c5fd;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .progress-number {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #1e293b;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: #f59e0b;
+            border-radius: 20px;
+        }
+
+        .description {
+            color: #cbd5e1;
+            line-height: 1.7;
+        }
+
+        .attendance-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 18px;
+            padding: 25px;
+        }
+
+        .attendance-card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 14px;
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .present {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .late {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        .absent {
+            color: #f87171;
+            font-weight: bold;
+        }
+
+        .notes {
+            color: #94a3b8;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 35px 20px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 700px) {
+
+            .container {
+                padding: 30px 15px;
+            }
+
+            .header h1 {
+                font-size: 30px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            th,
+            td {
+                padding: 12px 8px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <a
+        href="{% url 'projects:worker_projects' %}"
+        class="back"
+    >
+        ← Back to My Projects
+    </a>
+
+
+    <div class="header">
+
+        <h1>
+            {{ project.name }}
+        </h1>
+
+        <p>
+            Project details and your attendance history
+        </p>
+
+    </div>
+
+
+    <!-- PROJECT INFORMATION -->
+
+    <div class="grid">
+
+
+        <div class="card">
+
+            <h2>
+                Project Information
+            </h2>
+
+
+            <div class="info">
+
+                <span class="label">
+                    Company
+                </span>
+
+                <span class="value company">
+
+                    {{ project.company.company_name }}
+
+                </span>
+
+            </div>
+
+
+            <div class="info">
+
+                <span class="label">
+                    Location
+                </span>
+
+                <span class="value">
+
+                    {{ project.location }}
+
+                </span>
+
+            </div>
+
+
+            <div class="info">
+
+                <span class="label">
+                    Status
+                </span>
+
+                <span class="status">
+
+                    {{ project.get_status_display }}
+
+                </span>
+
+            </div>
+
+
+            <div class="info">
+
+                <span class="label">
+                    Start Date
+                </span>
+
+                <span class="value">
+
+                    {% if project.start_date %}
+                        {{ project.start_date|date:"F d, Y" }}
+                    {% else %}
+                        Not specified
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+            <div class="info">
+
+                <span class="label">
+                    Expected Completion
+                </span>
+
+                <span class="value">
+
+                    {% if project.expected_completion_date %}
+                        {{ project.expected_completion_date|date:"F d, Y" }}
+                    {% else %}
+                        Not specified
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROGRESS -->
+
+        <div class="card">
+
+            <h2>
+                Project Progress
+            </h2>
+
+
+            <div class="progress-header">
+
+                <span>
+                    Completion
+                </span>
+
+                <span class="progress-number">
+
+                    {{ project.progress }}%
+
+                </span>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+                <div
+                    class="progress"
+                    style="width: {{ project.progress }}%;"
+                ></div>
+
+            </div>
+
+
+            <div style="margin-top: 25px;">
+
+                <span class="label">
+                    Description
+                </span>
+
+                <p class="description">
+
+                    {% if project.description %}
+
+                        {{ project.description }}
+
+                    {% else %}
+
+                        No project description provided.
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ATTENDANCE -->
+
+    <div class="attendance-card">
+
+        <h2>
+            My Attendance
+        </h2>
+
+
+        {% if attendance_records %}
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Notes
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for record in attendance_records %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ record.date|date:"F d, Y" }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if record.status == "PRESENT" %}
+
+                                        <span class="present">
+                                            Present
+                                        </span>
+
+                                    {% elif record.status == "LATE" %}
+
+                                        <span class="late">
+                                            Late
+                                        </span>
+
+                                    {% elif record.status == "ABSENT" %}
+
+                                        <span class="absent">
+                                            Absent
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td class="notes">
+
+                                    {% if record.notes %}
+
+                                        {{ record.notes }}
+
+                                    {% else %}
+
+                                        —
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+
+                <p>
+                    No attendance records have been recorded
+                    for you on this project yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

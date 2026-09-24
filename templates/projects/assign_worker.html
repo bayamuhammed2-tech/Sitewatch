@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Assign Worker | SiteWatch</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b1120;
+            color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #94a3b8;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #f59e0b;
+        }
+
+        .header {
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            margin: 0 0 10px;
+            font-size: 32px;
+        }
+
+        .header p {
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .project-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .project-card h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .project-info {
+            color: #94a3b8;
+            line-height: 1.7;
+        }
+
+        .workers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .worker-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .worker-card h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .worker-card p {
+            color: #94a3b8;
+            margin: 8px 0;
+        }
+
+        .job-title {
+            color: #f59e0b !important;
+            font-weight: bold;
+        }
+
+        .assign-button {
+            width: 100%;
+            margin-top: 18px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #f59e0b;
+            color: #111827;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .assign-button:hover {
+            background: #fbbf24;
+        }
+
+        .empty {
+            background: #111827;
+            border: 1px dashed #334155;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a
+        href="{% url 'projects:project_detail' project.id %}"
+        class="back"
+    >
+        ← Back to Project
+    </a>
+
+    <div class="header">
+
+        <h1>Assign Worker</h1>
+
+        <p>
+            Select an accepted worker to assign to this project.
+        </p>
+
+    </div>
+
+
+    <div class="project-card">
+
+        <h2>
+            {{ project.name }}
+        </h2>
+
+        <div class="project-info">
+
+            <div>
+                <strong>Location:</strong>
+                {{ project.location }}
+            </div>
+
+            <div>
+                <strong>Status:</strong>
+                {{ project.get_status_display }}
+            </div>
+
+            <div>
+                <strong>Progress:</strong>
+                {{ project.progress }}%
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% if available_applications %}
+
+        <div class="workers-grid">
+
+            {% for application in available_applications %}
+
+                <div class="worker-card">
+
+                    <h3>
+                        {{ application.worker.user.get_full_name|default:application.worker.user.username }}
+                    </h3>
+
+                    <p>
+                        <strong>Username:</strong>
+                        {{ application.worker.user.username }}
+                    </p>
+
+                    <p>
+                        <strong>Location:</strong>
+                        {{ application.worker.location }}
+                    </p>
+
+                    <p>
+                        <strong>Experience:</strong>
+                        {{ application.worker.years_of_experience }}
+                        years
+                    </p>
+
+                    <p>
+                        <strong>Skills:</strong>
+                        {{ application.worker.skills }}
+                    </p>
+
+                    <p class="job-title">
+                        Accepted for:
+                        {{ application.job.title }}
+                    </p>
+
+
+                    <form
+                        method="POST"
+                        action="{% url 'projects:assign_worker' project.id %}"
+                    >
+
+                        {% csrf_token %}
+
+                        <input
+                            type="hidden"
+                            name="worker_id"
+                            value="{{ application.worker.id }}"
+                        >
+
+                        <button
+                            type="submit"
+                            class="assign-button"
+                        >
+                            Assign Worker
+                        </button>
+
+                    </form>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+
+            <h3>No Available Workers</h3>
+
+            <p>
+                There are currently no accepted workers available
+                to assign to this project.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

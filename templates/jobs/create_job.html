@@ -1,0 +1,467 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Post a Job | SiteWatch</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #080d17;
+            --panel: #101827;
+            --panel-light: #162235;
+            --border: rgba(255, 255, 255, 0.09);
+            --border-strong: rgba(255, 255, 255, 0.16);
+            --text: #f5f7fb;
+            --muted: #91a0b8;
+            --amber: #f5a623;
+            --cyan: #43c9e0;
+            --green: #42d392;
+            --red: #ff7777;
+            --ease: cubic-bezier(.22, 1, .36, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            background: var(--bg);
+        }
+
+        body {
+            min-height: 100vh;
+            color: var(--text);
+            font-family: "Inter", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background:
+                radial-gradient(
+                    circle at 80% 10%,
+                    rgba(67, 201, 224, 0.10),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 10% 80%,
+                    rgba(245, 166, 35, 0.10),
+                    transparent 30%
+                ),
+                var(--bg);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .18;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 45px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* BACK NAVIGATION */
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 28px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.25s var(--ease), transform 0.25s var(--ease);
+        }
+
+        .back-link:hover {
+            color: var(--text);
+            transform: translateX(-3px);
+        }
+
+        /* HEADER */
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .eyebrow {
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(28px, 4vw, 38px);
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        /* CARD FORM */
+
+        .card {
+            background: rgba(16, 24, 39, 0.88);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
+            transition: border-color 0.3s var(--ease);
+        }
+
+        .card:hover {
+            border-color: var(--border-strong);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            color: #cbd2dc;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Styling for Django-rendered input elements */
+        .field input,
+        .field select,
+        .field textarea,
+        .form-input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            outline: none;
+            background: rgba(8, 13, 23, 0.75);
+            color: var(--text);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease);
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus,
+        .form-input:focus {
+            border-color: var(--cyan);
+            background: rgba(16, 24, 39, 0.95);
+            box-shadow: 0 0 0 3px rgba(67, 201, 224, 0.12);
+        }
+
+        .field textarea,
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .help {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .errors {
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            color: #ffb4b4;
+            background: rgba(255, 119, 119, 0.08);
+            border: 1px solid rgba(255, 119, 119, 0.22);
+            border-radius: 12px;
+            font-size: 13px;
+        }
+
+        .field-errors {
+            color: var(--red);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 14px;
+            margin-top: 32px;
+            padding-top: 28px;
+            border-top: 1px solid var(--border);
+        }
+
+        .cancel {
+            padding: 12px 22px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+        }
+
+        .cancel:hover {
+            color: var(--text);
+            border-color: var(--border-strong);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .submit {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            background: var(--amber);
+            color: #10151d;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease);
+        }
+
+        .submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(245, 166, 35, 0.26);
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .actions {
+                flex-direction: column-reverse;
+                gap: 10px;
+            }
+
+            .cancel, .submit {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a href="{% url 'company_dashboard' %}" class="back-link">
+        ← Back to Dashboard
+    </a>
+
+    <header class="header">
+        <div class="eyebrow">Workforce</div>
+        <h1>Post a Construction Job</h1>
+        <p class="subtitle">Find skilled workers for your active construction projects.</p>
+    </header>
+
+    <div class="card">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="grid">
+
+                <div class="field full">
+                    <label for="{{ form.project.id_for_label }}">
+                        Project
+                    </label>
+                    {{ form.project }}
+                    <span class="help">
+                        Select the construction project this job belongs to.
+                    </span>
+                    {% if form.project.errors %}
+                        <div class="field-errors">
+                            {{ form.project.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="field full">
+                    <label for="{{ form.title.id_for_label }}">
+                        Job Title
+                    </label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="field-errors">
+                            {{ form.title.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="field full">
+                    <label for="{{ form.description.id_for_label }}">
+                        Job Description
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="field-errors">
+                            {{ form.description.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="field full">
+                    <label for="{{ form.required_skills.id_for_label }}">
+                        Required Skills
+                    </label>
+                    {{ form.required_skills }}
+                    {% if form.required_skills.errors %}
+                        <div class="field-errors">
+                            {{ form.required_skills.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="field">
+                    <label for="{{ form.job_type.id_for_label }}">
+                        Job Type
+                    </label>
+                    {{ form.job_type }}
+                    {% if form.job_type.errors %}
+                        <div class="field-errors">
+                            {{ form.job_type.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="field">
+                    <label for="{{ form.number_of_workers.id_for_label }}">
+                        Number of Workers
+                    </label>
+                    {{ form.number_of_workers }}
+                    {% if form.number_of_workers.errors %}
+                        <div class="field-errors">
+                            {{ form.number_of_workers.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="field">
+                    <label for="{{ form.location.id_for_label }}">
+                        Job Location
+                    </label>
+                    {{ form.location }}
+                    {% if form.location.errors %}
+                        <div class="field-errors">
+                            {{ form.location.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="field">
+                    <label for="{{ form.application_deadline.id_for_label }}">
+                        Application Deadline
+                    </label>
+                    {{ form.application_deadline }}
+                    {% if form.application_deadline.errors %}
+                        <div class="field-errors">
+                            {{ form.application_deadline.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'company_dashboard' %}" class="cancel">
+                    Cancel
+                </a>
+                <button type="submit" class="submit">
+                    Publish Job
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function(){
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var hasGSAP = typeof gsap !== 'undefined';
+
+    if (!hasGSAP || reduceMotion) return;
+
+    gsap.set('.back-link, .header', { opacity: 0, y: -12 });
+    gsap.set('.card', { opacity: 0, y: 18 });
+    gsap.set('.field', { opacity: 0, y: 10 });
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.to('.back-link, .header', { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 })
+      .to('.card', { opacity: 1, y: 0, duration: 0.55 }, '-=0.25')
+      .to('.field', { opacity: 1, y: 0, duration: 0.35, stagger: 0.04 }, '-=0.35');
+})();
+</script>
+
+</body>
+</html>

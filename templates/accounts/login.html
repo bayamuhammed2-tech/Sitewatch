@@ -1,0 +1,472 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | SiteWatch</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0a0f1a;
+            --card: rgba(18, 26, 42, 0.92);
+            --border: rgba(255, 255, 255, 0.10);
+            --border-strong: rgba(255, 255, 255, 0.18);
+            --text: #f5f7fb;
+            --muted: #91a0b8;
+            --amber: #f5a623;
+            --cyan: #43c9e0;
+            --danger: #ff7777;
+            --ease: cubic-bezier(.22,1,.36,1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html { background: var(--bg); }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            color: var(--text);
+            font-family: "Inter", sans-serif;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            background:
+                radial-gradient(
+                    circle at 15% 15%,
+                    rgba(245, 166, 35, 0.13),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 85% 85%,
+                    rgba(67, 201, 224, 0.12),
+                    transparent 30%
+                ),
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px),
+                var(--bg);
+
+            background-size: auto, auto, 42px 42px, 42px 42px, auto;
+            background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            z-index: 1;
+            perspective: 1400px;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .logo {
+            width: 58px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+
+            color: #111827;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+
+            background: linear-gradient(
+                135deg,
+                var(--amber),
+                #ffd27b
+            );
+
+            border-radius: 17px;
+            box-shadow: 0 0 35px rgba(245, 166, 35, 0.18);
+        }
+
+        .brand h1 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 30px;
+            letter-spacing: -1px;
+        }
+
+        .brand h1 span {
+            color: var(--amber);
+        }
+
+        .brand p {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .card {
+            padding: 34px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.35),
+                inset 0 1px rgba(255,255,255,0.04);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            transform-style: preserve-3d;
+        }
+
+        .card-header {
+            margin-bottom: 26px;
+        }
+
+        .card-header h2 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .card-header p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 9px;
+        }
+
+        label {
+            display: block;
+            color: #dce4f1;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .field > label {
+            margin-bottom: 9px;
+        }
+
+        .forgot-link {
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.25s var(--ease);
+        }
+
+        .forgot-link:hover {
+            color: #7fe0f2;
+            text-decoration: underline;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+
+            color: var(--text);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+
+            background: rgba(7, 12, 23, 0.85);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px;
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease,
+                background 0.2s ease;
+        }
+
+        input::placeholder {
+            color: #63718a;
+        }
+
+        input:hover {
+            border-color: var(--border-strong);
+        }
+
+        input:focus {
+            border-color: var(--amber);
+            box-shadow: 0 0 0 4px rgba(245, 166, 35, 0.10);
+            transform: translateY(-1px);
+        }
+
+        .errors {
+            margin-bottom: 18px;
+            padding: 12px 14px;
+            color: var(--danger);
+            background: rgba(255, 80, 80, 0.08);
+            border: 1px solid rgba(255, 100, 100, 0.20);
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 5px;
+
+            color: #111827;
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+
+            background: linear-gradient(
+                135deg,
+                var(--amber),
+                #ffd27b
+            );
+
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
+            transform: skewX(-20deg);
+            transition: left 0.7s var(--ease);
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(245, 166, 35, 0.20);
+        }
+
+        .button:hover::before {
+            left: 130%;
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .links {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 24px;
+            font-size: 13px;
+        }
+
+        .links a {
+            color: var(--cyan);
+            text-decoration: none;
+            transition: color 0.25s var(--ease);
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+            color: #7fe0f2;
+        }
+
+        .footer {
+            margin-top: 24px;
+            color: #617089;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        @media (max-width: 520px) {
+            .card {
+                padding: 25px;
+            }
+
+            .brand h1 {
+                font-size: 26px;
+            }
+
+            .links {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="wrapper">
+
+        <section class="brand" data-el>
+            <div class="logo">S</div>
+
+            <h1>Site<span>Watch</span></h1>
+
+            <p>Construction management made simple.</p>
+        </section>
+
+        <section class="card" id="authCard">
+
+            <div class="card-header" data-el>
+                <h2>Welcome back</h2>
+
+                <p>
+                    Sign in to manage construction projects,
+                    find jobs, and track your work.
+                </p>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="errors" data-el>
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="field" data-el>
+                    <label for="id_username">Username</label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        id="id_username"
+                        placeholder="Enter your username"
+                        value="{{ form.username.value|default:'' }}"
+                        required
+                        autofocus
+                    >
+
+                    {% for error in form.username.errors %}
+                        <div class="errors">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="field" data-el>
+                    <div class="label-row">
+                        <label for="id_password">Password</label>
+                        <a href="{% url 'password_reset' %}" class="forgot-link">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <input
+                        type="password"
+                        name="password"
+                        id="id_password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                    {% for error in form.password.errors %}
+                        <div class="errors">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="button" data-el>
+                    Sign in to SiteWatch
+                </button>
+            </form>
+
+            <div class="links" data-el>
+                <a href="{% url 'home' %}">← Back to home</a>
+
+                <a href="{% url 'register' %}">
+                    Create an account
+                </a>
+            </div>
+
+        </section>
+
+        <p class="footer" data-el>
+            © 2026 SiteWatch. Construction workforce platform.
+        </p>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+    (function(){
+        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var isTouch = window.matchMedia('(pointer: coarse)').matches;
+        var hasGSAP = typeof gsap !== 'undefined';
+
+        /* ---------- entrance sequence ---------- */
+        if (hasGSAP && !reduceMotion) {
+            gsap.set('#authCard', { opacity: 0, y: 28, scale: 0.97, rotateX: 5 });
+            gsap.set('[data-el]', { opacity: 0, y: 14 });
+
+            var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+            tl.to('.brand [data-el], .brand', { opacity: 1, y: 0, duration: 0.5 })
+              .to('#authCard', { opacity: 1, y: 0, scale: 1, rotateX: 0, duration: 0.85 }, '-=0.25')
+              .to('.card-header, .field, button[data-el], .links', { opacity: 1, y: 0, duration: 0.5, stagger: 0.07 }, '-=0.45')
+              .to('.footer', { opacity: 1, y: 0, duration: 0.5 }, '-=0.2');
+        } else if (hasGSAP) {
+            gsap.set(['#authCard', '[data-el]'], { opacity: 1, y: 0, scale: 1, rotateX: 0 });
+        }
+
+        /* ---------- cursor-driven card tilt ---------- */
+        if (!reduceMotion && !isTouch && hasGSAP) {
+            var card = document.getElementById('authCard');
+
+            document.addEventListener('mousemove', function(e){
+                var px = (e.clientX / window.innerWidth) - 0.5;
+                var py = (e.clientY / window.innerHeight) - 0.5;
+
+                gsap.to(card, {
+                    rotateY: px * 6,
+                    rotateX: -py * 6,
+                    duration: 0.6,
+                    ease: 'power2.out'
+                });
+            });
+
+            document.addEventListener('mouseleave', function(){
+                gsap.to(card, { rotateY: 0, rotateX: 0, duration: 0.6, ease: 'power2.out' });
+            });
+        }
+
+        /* ---------- field focus micro-nudge ---------- */
+        document.querySelectorAll('.field input').forEach(function(el){
+            el.addEventListener('focus', function(){
+                if (!hasGSAP || reduceMotion) return;
+                var field = el.closest('.field');
+                gsap.to(field, { x: 3, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 });
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

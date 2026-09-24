@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Applications | SiteWatch</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b0f14;
+            color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .back {
+            color: #f5b942;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #8d98a6;
+            margin-bottom: 30px;
+        }
+
+        .application {
+            background: #121821;
+            border: 1px solid #26313d;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 15px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .job-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .company {
+            color: #9aa4b2;
+        }
+
+        .project {
+            margin-top: 8px;
+            color: #8d98a6;
+            font-size: 14px;
+        }
+
+        .status {
+            padding: 7px 13px;
+            border-radius: 20px;
+            background: #26313d;
+            color: #f5b942;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .details {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #26313d;
+            color: #9aa4b2;
+            font-size: 14px;
+        }
+
+        .empty {
+            background: #121821;
+            border: 1px solid #26313d;
+            border-radius: 14px;
+            padding: 50px 25px;
+            text-align: center;
+        }
+
+        .empty h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty p {
+            color: #8d98a6;
+        }
+
+        .find-jobs {
+            display: inline-block;
+            margin-top: 15px;
+            background: #f5b942;
+            color: #111;
+            padding: 11px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @media (max-width: 650px) {
+
+            .top {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <a
+        href="{% url 'worker_dashboard' %}"
+        class="back"
+    >
+        ← Back to Dashboard
+    </a>
+
+
+    <h1>My Applications</h1>
+
+    <p class="subtitle">
+        Track the jobs you have applied for and their current status.
+    </p>
+
+
+    {% if applications %}
+
+        {% for application in applications %}
+
+            <div class="application">
+
+                <div class="top">
+
+                    <div>
+
+                        <div class="job-title">
+                            {{ application.job.title }}
+                        </div>
+
+                        <div class="company">
+                            {{ application.job.company.name }}
+                        </div>
+
+                        <div class="project">
+                            Project:
+                            {{ application.job.project.name }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="status">
+
+                        {{ application.get_status_display }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="details">
+
+                    Applied:
+                    {{ application.applied_at|date:"F j, Y" }}
+
+                    ·
+
+                    Job location:
+                    {{ application.job.location }}
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+
+            <h2>No applications yet</h2>
+
+            <p>
+                You haven't applied for any construction jobs yet.
+            </p>
+
+            <a
+                href="{% url 'jobs:job_list' %}"
+                class="find-jobs"
+            >
+                Find Jobs
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>

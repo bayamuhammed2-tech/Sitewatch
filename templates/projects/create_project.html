@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Create Project | SiteWatch</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b0f14;
+            color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .back {
+            color: #f5b942;
+            text-decoration: none;
+        }
+
+        .card {
+            margin-top: 25px;
+            background: #121821;
+            border: 1px solid #26313d;
+            border-radius: 14px;
+            padding: 30px;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #8d98a6;
+            margin-bottom: 30px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #26313d;
+            background: #0b0f14;
+            color: #f5f7fa;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .help {
+            display: block;
+            margin-top: 5px;
+            color: #7d8794;
+            font-size: 13px;
+        }
+
+        .errors {
+            color: #ef4444;
+            margin-top: 5px;
+            font-size: 13px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #f5b942;
+            color: #111;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <a
+        href="{% url 'projects:project_list' %}"
+        class="back"
+    >
+        ← Projects
+    </a>
+
+
+    <div class="card">
+
+        <h1>Create Project</h1>
+
+        <p class="subtitle">
+            Add a new construction project to SiteWatch.
+        </p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            {% for field in form %}
+
+                <div class="field">
+
+                    {{ field.label_tag }}
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <span class="help">
+                            {{ field.help_text }}
+                        </span>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <div class="errors">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+            {% endfor %}
+
+
+            <button
+                type="submit"
+                class="button"
+            >
+                Create Project
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

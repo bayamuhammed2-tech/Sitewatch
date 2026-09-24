@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Application Details | SiteWatch</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b0f14;
+            color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f5b942;
+            text-decoration: none;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #9aa4b2;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: #121821;
+            border: 1px solid #26313d;
+            border-radius: 14px;
+            padding: 25px;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .label {
+            display: block;
+            color: #8d98a6;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .value {
+            font-size: 16px;
+        }
+
+        .skills {
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #26313d;
+            color: #f5b942;
+            font-size: 14px;
+        }
+
+        .cover-message {
+            line-height: 1.7;
+            color: #d5dbe2;
+            white-space: pre-line;
+        }
+
+        .actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .shortlist {
+            background: #eab308;
+            color: #111;
+        }
+
+        .accept {
+            background: #22c55e;
+            color: white;
+        }
+
+        .reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        @media (max-width: 700px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a href="{% url 'company_dashboard' %}" class="back">
+        ← Back to Dashboard
+    </a>
+
+    <div class="header">
+        <h1>Job Application</h1>
+
+        <p>
+            Review the worker's application before making a decision.
+        </p>
+    </div>
+
+    <div class="grid">
+
+        <!-- Worker Information -->
+        <div class="card">
+
+            <h2>Worker Information</h2>
+
+            <div class="field">
+                <span class="label">Name</span>
+                <div class="value">
+                    {{ application.worker.user.username }}
+                </div>
+            </div>
+
+            <div class="field">
+                <span class="label">Phone Number</span>
+                <div class="value">
+                    {{ application.worker.phone_number }}
+                </div>
+            </div>
+
+            <div class="field">
+                <span class="label">Location</span>
+                <div class="value">
+                    {{ application.worker.location }}
+                </div>
+            </div>
+
+            <div class="field">
+                <span class="label">Years of Experience</span>
+                <div class="value">
+                    {{ application.worker.years_of_experience }}
+                    years
+                </div>
+            </div>
+
+            <div class="field">
+                <span class="label">Availability</span>
+                <div class="value">
+                    {{ application.worker.get_availability_display }}
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Skills -->
+        <div class="card">
+
+            <h2>Skills</h2>
+
+            <div class="skills">
+                {{ application.worker.skills }}
+            </div>
+
+            {% if application.worker.bio %}
+                <div class="field" style="margin-top: 25px;">
+
+                    <span class="label">Bio</span>
+
+                    <div class="value">
+                        {{ application.worker.bio }}
+                    </div>
+
+                </div>
+            {% endif %}
+
+        </div>
+
+
+        <!-- Job -->
+        <div class="card">
+
+            <h2>Job Information</h2>
+
+            <div class="field">
+                <span class="label">Position</span>
+                <div class="value">
+                    {{ application.job.title }}
+                </div>
+            </div>
+
+            <div class="field">
+                <span class="label">Project</span>
+                <div class="value">
+                    {{ application.job.project.name }}
+                </div>
+            </div>
+
+            <div class="field">
+                <span class="label">Job Type</span>
+                <div class="value">
+                    {{ application.job.get_job_type_display }}
+                </div>
+            </div>
+
+            <div class="field">
+                <span class="label">Location</span>
+                <div class="value">
+                    {{ application.job.location }}
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Application -->
+        <div class="card">
+
+            <h2>Application</h2>
+
+            <div class="field">
+
+                <span class="label">Status</span>
+
+                <span class="status">
+                    {{ application.get_status_display }}
+                </span>
+
+            </div>
+
+            <div class="field">
+
+                <span class="label">Applied On</span>
+
+                <div class="value">
+                    {{ application.applied_at|date:"F j, Y, g:i A" }}
+                </div>
+
+            </div>
+
+            <div class="field">
+
+                <span class="label">Cover Message</span>
+
+                <div class="cover-message">
+                    {% if application.cover_message %}
+                        {{ application.cover_message }}
+                    {% else %}
+                        No cover message provided.
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Actions -->
+    <div class="card" style="margin-top: 20px;">
+
+        <h2>Application Decision</h2>
+
+        <div class="actions">
+
+    <form
+        method="POST"
+        action="{% url 'jobs:update_application_status' application.id 'SHORTLISTED' %}"
+    >
+        {% csrf_token %}
+
+        <button type="submit" class="button shortlist">
+            Shortlist
+        </button>
+    </form>
+
+
+    <form
+        method="POST"
+        action="{% url 'jobs:update_application_status' application.id 'ACCEPTED' %}"
+    >
+        {% csrf_token %}
+
+        <button type="submit" class="button accept">
+            Accept
+        </button>
+    </form>
+
+
+    <form
+        method="POST"
+        action="{% url 'jobs:update_application_status' application.id 'REJECTED' %}"
+    >
+        {% csrf_token %}
+
+        <button type="submit" class="button reject">
+            Reject
+        </button>
+    </form>
+
+</div>
+
+      
+
+    </div>
+
+</div>
+
+</body>
+</html>

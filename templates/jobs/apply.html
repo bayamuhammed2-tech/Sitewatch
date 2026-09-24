@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Apply | {{ job.title }} | SiteWatch</title>
+
+</head>
+
+<body>
+
+    <a href="{% url 'jobs:job_detail' job.id %}">
+        ← Back to Job
+    </a>
+
+    <h1>Apply for {{ job.title }}</h1>
+
+    <p>
+        <strong>Company:</strong>
+        {{ job.company.company_name }}
+    </p>
+
+    <p>
+        <strong>Project:</strong>
+        {{ job.project.name }}
+    </p>
+
+    <p>
+        <strong>Location:</strong>
+        {{ job.location }}
+    </p>
+
+    <hr>
+
+    <h2>Your Application</h2>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Submit Application
+        </button>
+
+    </form>
+
+</body>
+
+</html>

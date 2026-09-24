@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ job.title }} | SiteWatch</title>
+
+</head>
+
+<body>
+
+    <a href="{% url 'jobs:job_list' %}">
+        ← Back to Jobs
+    </a>
+
+    <h1>{{ job.title }}</h1>
+
+    <p>
+        <strong>Company:</strong>
+        {{ job.company.company_name }}
+    </p>
+
+    <p>
+        <strong>Project:</strong>
+        {{ job.project.name }}
+    </p>
+
+    <p>
+        <strong>Location:</strong>
+        {{ job.location }}
+    </p>
+
+    <p>
+        <strong>Job Type:</strong>
+        {{ job.get_job_type_display }}
+    </p>
+
+    <p>
+        <strong>Workers Needed:</strong>
+        {{ job.number_of_workers }}
+    </p>
+
+    <p>
+        <strong>Application Deadline:</strong>
+        {{ job.application_deadline|default:"No deadline specified" }}
+    </p>
+
+    <hr>
+
+    <h2>Description</h2>
+
+    <p>
+        {{ job.description }}
+    </p>
+
+    <h2>Required Skills</h2>
+
+    <p>
+        {{ job.required_skills }}
+    </p>
+
+    <hr>
+
+    {% if already_applied %}
+
+        <p>
+            You have already applied for this job.
+        </p>
+
+    {% else %}
+
+        <a href="{% url 'jobs:apply_for_job' job.id %}">
+            Apply for this Job
+        </a>
+
+    {% endif %}
+
+</body>
+
+</html>

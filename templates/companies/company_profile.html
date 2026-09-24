@@ -1,0 +1,778 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ company.company_name }} | SiteWatch</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #070b10;
+            --sidebar: #0b1118;
+            --card: #101821;
+            --card-light: #141f2a;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f5f7fa;
+            --muted: #8d9aa8;
+            --amber: #f5b942;
+            --cyan: #35d7ff;
+            --green: #45d483;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at 85% 10%,
+                    rgba(53, 215, 255, 0.07),
+                    transparent 25%
+                ),
+                radial-gradient(
+                    circle at 20% 80%,
+                    rgba(245, 185, 66, 0.05),
+                    transparent 25%
+                ),
+                var(--bg);
+            color: var(--text);
+            font-family: "Inter", sans-serif;
+        }
+
+        .layout {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background: rgba(11, 17, 24, 0.96);
+            border-right: 1px solid var(--border);
+            padding: 28px 18px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0 10px;
+            margin-bottom: 38px;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(
+                135deg,
+                var(--amber),
+                #ff8c42
+            );
+            color: #071016;
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 0 25px rgba(245, 185, 66, 0.18);
+        }
+
+        .brand-name {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-label {
+            color: #596572;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 0 12px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 13px;
+            color: var(--muted);
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s ease;
+        }
+
+        .nav a:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav a.active {
+            color: var(--text);
+            background: rgba(245, 185, 66, 0.09);
+            border: 1px solid rgba(245, 185, 66, 0.12);
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 32px 42px 60px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 34px;
+        }
+
+        .breadcrumb {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .breadcrumb span {
+            color: var(--cyan);
+        }
+
+        .page-title {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 31px;
+            font-weight: 600;
+            letter-spacing: -1px;
+        }
+
+        .page-subtitle {
+            color: var(--muted);
+            margin-top: 7px;
+            font-size: 13px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.025);
+            transition: 0.2s ease;
+        }
+
+        .back-btn:hover {
+            border-color: rgba(53, 215, 255, 0.3);
+            background: rgba(53, 215, 255, 0.05);
+        }
+
+        /* PROFILE HEADER */
+
+        .profile-header {
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(245, 185, 66, 0.08),
+                    rgba(53, 215, 255, 0.04)
+                ),
+                var(--card);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            padding: 28px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::after {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            right: -100px;
+            top: -120px;
+            border-radius: 50%;
+            background: rgba(53, 215, 255, 0.06);
+            filter: blur(10px);
+        }
+
+        .profile-main {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .company-avatar {
+            width: 76px;
+            height: 76px;
+            flex-shrink: 0;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(245, 185, 66, 0.18),
+                    rgba(53, 215, 255, 0.1)
+                );
+            border: 1px solid rgba(245, 185, 66, 0.25);
+            color: var(--amber);
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 29px;
+            font-weight: 700;
+        }
+
+        .company-name {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .company-location {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .status {
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            background: rgba(69, 212, 131, 0.08);
+            border: 1px solid rgba(69, 212, 131, 0.18);
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 9px currentColor;
+        }
+
+        /* GRID */
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(16, 24, 33, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 24px;
+        }
+
+        .card-title {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 21px;
+        }
+
+        .info-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-row:first-child {
+            padding-top: 0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .info-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .info-value {
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 500;
+            text-align: right;
+            max-width: 60%;
+        }
+
+        .description {
+            color: #b4bec8;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            padding: 18px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--border);
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--border);
+            font-size: 12px;
+            transition: 0.2s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(245, 185, 66, 0.3);
+            background: rgba(245, 185, 66, 0.05);
+        }
+
+        .action-btn.primary {
+            background: rgba(245, 185, 66, 0.1);
+            border-color: rgba(245, 185, 66, 0.2);
+            color: var(--amber);
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                margin-left: 210px;
+                width: calc(100% - 210px);
+                padding: 25px;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 22px 17px 45px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .profile-main {
+                align-items: flex-start;
+            }
+
+            .status {
+                margin-left: 0;
+                margin-top: 5px;
+            }
+
+            .profile-main {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-mark">S</div>
+            <div class="brand-name">SiteWatch</div>
+        </div>
+
+        <div class="nav-label">Workspace</div>
+
+        <nav class="nav">
+
+            <a href="{% url 'company_dashboard' %}">
+                <span class="nav-icon">▦</span>
+                Dashboard
+            </a>
+
+            <a href="{% url 'companies:company_profile' %}" class="active">
+                <span class="nav-icon">▣</span>
+                My Company
+            </a>
+
+            <a href="{% url 'projects:project_list' %}">
+                <span class="nav-icon">🏗</span>
+                Projects
+            </a>
+
+            <a href="{% url 'jobs:create_job' %}">
+                <span class="nav-icon">＋</span>
+                Post a Job
+            </a>
+
+            <a href="{% url 'projects:attendance_projects' %}">
+                <span class="nav-icon">◷</span>
+                Attendance
+            </a>
+
+            <a href="{% url 'logout' %}">
+                <span class="nav-icon">↪</span>
+                Logout
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <div>
+                <div class="breadcrumb">
+                    SiteWatch / <span>My Company</span>
+                </div>
+
+                <h1 class="page-title">Company Profile</h1>
+
+                <p class="page-subtitle">
+                    Manage and view your company's information.
+                </p>
+            </div>
+
+            <a href="{% url 'company_dashboard' %}" class="back-btn">
+                ← Dashboard
+            </a>
+
+        </div>
+
+
+        <!-- PROFILE HEADER -->
+
+        <section class="profile-header">
+
+            <div class="profile-main">
+
+                <div class="company-avatar">
+                    {{ company.company_name|first|upper }}
+                </div>
+
+                <div>
+                    <h2 class="company-name">
+                        {{ company.company_name }}
+                    </h2>
+
+                    <div class="company-location">
+                        ◉ {{ company.location }}
+                    </div>
+                </div>
+
+                <div class="status">
+                    <span class="status-dot"></span>
+
+                    {{ company.get_verification_status_display }}
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="content-grid">
+
+            <!-- COMPANY INFORMATION -->
+
+            <div>
+
+                <div class="card">
+
+                    <h2 class="card-title">
+                        Company Information
+                    </h2>
+
+                    <div class="info-list">
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Company Name
+                            </span>
+
+                            <span class="info-value">
+                                {{ company.company_name }}
+                            </span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Email
+                            </span>
+
+                            <span class="info-value">
+                                {{ company.email }}
+                            </span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Phone
+                            </span>
+
+                            <span class="info-value">
+                                {{ company.phone_number }}
+                            </span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Location
+                            </span>
+
+                            <span class="info-value">
+                                {{ company.location }}
+                            </span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Verification
+                            </span>
+
+                            <span class="info-value">
+                                {{ company.get_verification_status_display }}
+                            </span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Joined SiteWatch
+                            </span>
+
+                            <span class="info-value">
+                                {{ company.created_at|date:"F d, Y" }}
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="card" style="margin-top: 20px;">
+
+                    <h2 class="card-title">
+                        About the Company
+                    </h2>
+
+                    <p class="description">
+                        {{ company.description|default:"No company description has been added yet." }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT COLUMN -->
+
+            <div>
+
+                <div class="card">
+
+                    <h2 class="card-title">
+                        Company Overview
+                    </h2>
+
+                    <div class="stats">
+
+                        <div class="stat">
+                            <div class="stat-label">
+                                Projects
+                            </div>
+
+                            <div class="stat-value">
+                                {{ company.projects.count }}
+                            </div>
+                        </div>
+
+                        <div class="stat">
+                            <div class="stat-label">
+                                Workers
+                            </div>
+
+                            <div class="stat-value">
+                                {{ company.projects.all|length }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card actions">
+
+                    <h2 class="card-title">
+                        Quick Actions
+                    </h2>
+
+                    <a
+                        href="{% url 'projects:project_list' %}"
+                        class="action-btn"
+                    >
+                        <span>View Projects</span>
+                        <span>→</span>
+                    </a>
+
+                    <a
+                        href="{% url 'jobs:create_job' %}"
+                        class="action-btn"
+                    >
+                        <span>Post a Job</span>
+                        <span>→</span>
+                    </a>
+
+                    <a
+                        href="{% url 'projects:attendance_projects' %}"
+                        class="action-btn"
+                    >
+                        <span>Manage Attendance</span>
+                        <span>→</span>
+                    </a>
+
+                    <a
+                        href="{% url 'company_dashboard' %}"
+                        class="action-btn primary"
+                    >
+                        <span>Back to Dashboard</span>
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

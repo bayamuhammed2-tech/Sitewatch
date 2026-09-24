@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        My Attendance | SiteWatch
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b1120;
+            color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 45px 20px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #94a3b8;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #f59e0b;
+        }
+
+        .header {
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            margin: 0 0 10px;
+            font-size: 38px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #94a3b8;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            padding: 22px;
+        }
+
+        .summary-label {
+            color: #64748b;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .summary-number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .present-number {
+            color: #4ade80;
+        }
+
+        .late-number {
+            color: #fbbf24;
+        }
+
+        .absent-number {
+            color: #f87171;
+        }
+
+        .rate-number {
+            color: #f59e0b;
+        }
+
+        .attendance-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 18px;
+            padding: 25px;
+        }
+
+        .attendance-card h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .rate-section {
+            margin-bottom: 30px;
+        }
+
+        .rate-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #cbd5e1;
+        }
+
+        .rate-value {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #1e293b;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: #f59e0b;
+            border-radius: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 14px;
+            text-align: left;
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .project-name {
+            color: #f8fafc;
+            font-weight: bold;
+        }
+
+        .company {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .present {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .late {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        .absent {
+            color: #f87171;
+            font-weight: bold;
+        }
+
+        .notes {
+            color: #94a3b8;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 45px 20px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 800px) {
+
+            .summary {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .container {
+                padding: 30px 15px;
+            }
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 30px;
+            }
+
+            th,
+            td {
+                padding: 12px 8px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <a
+        href="{% url 'worker_dashboard' %}"
+        class="back"
+    >
+        ← Back to Dashboard
+    </a>
+
+
+    <div class="header">
+
+        <h1>
+            My Attendance
+        </h1>
+
+        <p>
+            Track your attendance across all construction
+            projects you have been assigned to.
+        </p>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary">
+
+
+        <div class="summary-card">
+
+            <div class="summary-label">
+                Total Days
+            </div>
+
+            <div class="summary-number">
+                {{ total_days }}
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-label">
+                Present
+            </div>
+
+            <div class="summary-number present-number">
+                {{ present_count }}
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-label">
+                Late
+            </div>
+
+            <div class="summary-number late-number">
+                {{ late_count }}
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-label">
+                Absent
+            </div>
+
+            <div class="summary-number absent-number">
+                {{ absent_count }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ATTENDANCE RATE -->
+
+    <div class="attendance-card rate-section">
+
+        <h2>
+            Attendance Rate
+        </h2>
+
+        <div class="rate-header">
+
+            <span>
+                Overall attendance
+            </span>
+
+            <span class="rate-value">
+                {{ attendance_rate }}%
+            </span>
+
+        </div>
+
+        <div class="progress-bar">
+
+            <div
+                class="progress"
+                style="width: {{ attendance_rate }}%;"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DAILY RECORDS -->
+
+    <div class="attendance-card">
+
+        <h2>
+            Daily Attendance Records
+        </h2>
+
+
+        {% if attendance_records %}
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Project
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Notes
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for record in attendance_records %}
+
+                            <tr>
+
+                                <td>
+                                    {{ record.date|date:"F d, Y" }}
+                                </td>
+
+
+                                <td>
+
+                                    <div class="project-name">
+
+                                        {{ record.project.name }}
+
+                                    </div>
+
+                                    <div class="company">
+
+                                        {{ record.project.company.company_name }}
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if record.status == "PRESENT" %}
+
+                                        <span class="present">
+                                            Present
+                                        </span>
+
+                                    {% elif record.status == "LATE" %}
+
+                                        <span class="late">
+                                            Late
+                                        </span>
+
+                                    {% elif record.status == "ABSENT" %}
+
+                                        <span class="absent">
+                                            Absent
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td class="notes">
+
+                                    {% if record.notes %}
+
+                                        {{ record.notes }}
+
+                                    {% else %}
+
+                                        —
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+
+                <p>
+                    You don't have any attendance records yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

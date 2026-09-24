@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Mark Attendance | SiteWatch
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b1120;
+            color: #f8fafc;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #94a3b8;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #f59e0b;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin: 0 0 10px;
+            font-size: 34px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #94a3b8;
+        }
+
+        .card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 18px;
+            padding: 30px;
+        }
+
+        .worker {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .worker h2 {
+            margin: 0 0 8px;
+        }
+
+        .worker p {
+            margin: 5px 0;
+            color: #94a3b8;
+        }
+
+        .date {
+            color: #f59e0b !important;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-weight: bold;
+        }
+
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 13px;
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #f59e0b;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .error {
+            color: #f87171;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .button {
+            flex: 1;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 15px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .save-button {
+            border: none;
+            background: #f59e0b;
+            color: #111827;
+        }
+
+        .save-button:hover {
+            background: #fbbf24;
+        }
+
+        .cancel-button {
+            border: 1px solid #334155;
+            background: transparent;
+            color: #f8fafc;
+        }
+
+        .cancel-button:hover {
+            border-color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+
+            .container {
+                padding: 30px 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <a
+        href="{% url 'projects:attendance' project.id %}"
+        class="back"
+    >
+        ← Back to Attendance
+    </a>
+
+
+    <div class="header">
+
+        <h1>
+            Mark Attendance
+        </h1>
+
+        <p>
+            Record attendance for a worker assigned to
+            <strong>{{ project.name }}</strong>.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+
+        <!-- WORKER INFORMATION -->
+
+        <div class="worker">
+
+            <h2>
+
+                {{ project_worker.worker.user.get_full_name|default:project_worker.worker.user.username }}
+
+            </h2>
+
+            <p>
+                Username:
+                {{ project_worker.worker.user.username }}
+            </p>
+
+            <p>
+                Skills:
+                {{ project_worker.worker.skills }}
+            </p>
+
+            <p>
+                Experience:
+                {{ project_worker.worker.years_of_experience }}
+                years
+            </p>
+
+            <p class="date">
+
+                Date:
+                {% now "F d, Y" %}
+
+            </p>
+
+        </div>
+
+
+        <!-- ATTENDANCE FORM -->
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="form-group">
+
+                <label for="{{ form.status.id_for_label }}">
+                    Attendance Status
+                </label>
+
+                {{ form.status }}
+
+                {% if form.status.errors %}
+
+                    <div class="error">
+                        {{ form.status.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="{{ form.notes.id_for_label }}">
+                    Notes
+                </label>
+
+                {{ form.notes }}
+
+                {% if form.notes.errors %}
+
+                    <div class="error">
+                        {{ form.notes.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="buttons">
+
+                <a
+                    href="{% url 'projects:attendance' project.id %}"
+                    class="button cancel-button"
+                >
+                    Cancel
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="button save-button"
+                >
+                    Save Attendance
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

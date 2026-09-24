@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Notifications | SiteWatch</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b0f14;
+            color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f5b942;
+            text-decoration: none;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #8d98a6;
+            margin-bottom: 30px;
+        }
+
+        .notification {
+            background: #121821;
+            border: 1px solid #26313d;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 15px;
+        }
+
+        .notification.unread {
+            border-left: 4px solid #f5b942;
+        }
+
+        .notification-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .message {
+            color: #c8d0da;
+            line-height: 1.6;
+        }
+
+        .date {
+            color: #7d8794;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            background: #121821;
+            border: 1px solid #26313d;
+            border-radius: 14px;
+        }
+
+        .empty p {
+            color: #8d98a6;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <a
+        href="{% url 'worker_dashboard' %}"
+        class="back"
+    >
+        ← Back to Dashboard
+    </a>
+
+    <h1>Notifications</h1>
+
+    <p class="subtitle">
+        Stay updated on your job applications.
+    </p>
+
+
+    {% if notifications %}
+
+        {% for notification in notifications %}
+
+            <div
+                class="notification
+                {% if not notification.is_read %}
+                    unread
+                {% endif %}"
+            >
+
+                <div class="notification-title">
+                    {{ notification.title }}
+                </div>
+
+                <div class="message">
+                    {{ notification.message }}
+                </div>
+
+                <div class="date">
+                    {{ notification.created_at|date:"F j, Y, g:i A" }}
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+
+            <h2>No notifications</h2>
+
+            <p>
+                You don't have any notifications yet.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>

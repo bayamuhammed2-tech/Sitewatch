@@ -1,0 +1,699 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | SiteWatch</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #080d17;
+            --panel: #101827;
+            --panel-light: #162235;
+            --border: rgba(255, 255, 255, 0.09);
+            --border-strong: rgba(255, 255, 255, 0.16);
+            --text: #f5f7fb;
+            --muted: #91a0b8;
+            --amber: #f5a623;
+            --cyan: #43c9e0;
+            --green: #42d392;
+            --red: #ff7777;
+            --purple: #b59cff;
+            --ease: cubic-bezier(.22,1,.36,1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html { background: var(--bg); }
+
+        body {
+            min-height: 100vh;
+            color: var(--text);
+            font-family: "Inter", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background:
+                radial-gradient(
+                    circle at 85% 0%,
+                    rgba(67, 201, 224, 0.09),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 0% 100%,
+                    rgba(245, 166, 35, 0.08),
+                    transparent 30%
+                ),
+                var(--bg);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            padding: 28px 18px;
+            border-right: 1px solid var(--border);
+            background: rgba(8, 13, 23, 0.88);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px;
+            margin-bottom: 42px;
+        }
+
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            color: #101827;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 23px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--amber), #ffd27b);
+            border-radius: 13px;
+            box-shadow: 0 0 22px rgba(245, 166, 35, 0.22);
+        }
+
+        .brand-name {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .brand-name span {
+            color: var(--amber);
+        }
+
+        .menu-label {
+            padding: 0 13px;
+            margin-bottom: 12px;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .nav a {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px;
+            color: var(--muted);
+            font-size: 14px;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            transition: background 0.25s var(--ease), border-color 0.25s var(--ease), color 0.25s var(--ease), transform 0.25s var(--ease);
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: var(--text);
+            background: rgba(245, 166, 35, 0.10);
+            border-color: rgba(245, 166, 35, 0.18);
+        }
+
+        .nav a:hover {
+            transform: translateX(3px);
+        }
+
+        .nav a.active {
+            color: var(--amber);
+        }
+
+        .sidebar-bottom {
+            margin-top: 45px;
+            padding: 16px;
+            background: rgba(67, 201, 224, 0.06);
+            border: 1px solid rgba(67, 201, 224, 0.14);
+            border-radius: 15px;
+            transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+        }
+
+        .sidebar-bottom:hover {
+            border-color: rgba(67, 201, 224, 0.28);
+            background: rgba(67, 201, 224, 0.09);
+        }
+
+        .sidebar-bottom strong {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--cyan);
+            font-size: 13px;
+        }
+
+        .sidebar-bottom p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* MAIN CONTENT */
+
+        .main {
+            width: 100%;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .header {
+            margin-bottom: 35px;
+        }
+
+        .eyebrow {
+            margin-bottom: 7px;
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        h1, h2, h3 {
+            font-family: "Space Grotesk", sans-serif;
+        }
+
+        .header h1 {
+            font-size: clamp(25px, 3vw, 34px);
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* PROFILE CARD */
+
+        .profile-card {
+            max-width: 880px;
+            padding: 32px;
+            background: rgba(16, 24, 39, 0.88);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            transition: border-color 0.3s var(--ease);
+        }
+
+        .profile-card:hover {
+            border-color: var(--border-strong);
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 28px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 68px;
+            height: 68px;
+            color: #10151d;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--amber), #ffd27b);
+            border-radius: 20px;
+            box-shadow: 0 0 0 4px rgba(245, 166, 35, 0.16);
+            transition: box-shadow 0.3s var(--ease);
+        }
+
+        .avatar:hover {
+            box-shadow: 0 0 0 6px rgba(245, 166, 35, 0.25);
+        }
+
+        .profile-top h2 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .profile-top p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 18px;
+            margin-bottom: 22px;
+            color: var(--text);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #cbd2dc;
+        }
+
+        /* Generic styling for form inputs rendered by Django */
+        .field input,
+        .field select,
+        .field textarea,
+        .form-input {
+            width: 100%;
+            border: 1px solid var(--border);
+            outline: none;
+            border-radius: 12px;
+            padding: 13px 16px;
+            color: var(--text);
+            background: rgba(10, 16, 28, 0.75);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease);
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus,
+        .form-input:focus {
+            border-color: var(--cyan);
+            background: rgba(16, 24, 39, 0.95);
+            box-shadow: 0 0 0 3px rgba(67, 201, 224, 0.12);
+        }
+
+        .field textarea,
+        textarea.form-input {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .errors {
+            margin-bottom: 22px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: #ffb4b4;
+            background: rgba(255, 119, 119, 0.08);
+            border: 1px solid rgba(255, 119, 119, 0.22);
+            font-size: 13px;
+        }
+
+        .field-errors {
+            color: var(--red);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 32px;
+        }
+
+        .save-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #111827;
+            background: var(--amber);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(245, 166, 35, 0.28);
+        }
+
+        .logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 35px;
+            color: var(--red);
+            font-size: 13px;
+            transition: gap 0.25s var(--ease), opacity 0.25s var(--ease);
+        }
+
+        .logout:hover {
+            gap: 9px;
+            opacity: 0.85;
+        }
+
+        @media (max-width: 1100px) {
+            .sidebar {
+                width: 220px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .layout {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .brand {
+                margin-bottom: 22px;
+            }
+
+            .nav {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .main {
+                padding: 22px 16px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar" id="sidebar">
+
+        <a href="{% url 'worker_dashboard' %}" class="brand" data-el>
+            <div class="logo-icon">S</div>
+
+            <div class="brand-name">
+                Site<span>Watch</span>
+            </div>
+        </a>
+
+        <div class="menu-label" data-el>Worker workspace</div>
+
+        <nav class="nav">
+
+            <a href="{% url 'worker_dashboard' %}" data-nav>
+                Dashboard
+            </a>
+
+            <a href="{% url 'workers:profile' %}" class="active" data-nav>
+                My Profile
+            </a>
+
+            <a href="#" data-nav>
+                Find Jobs
+            </a>
+
+            <a href="#" data-nav>
+                My Applications
+            </a>
+
+            <a href="#" data-nav>
+                My Projects
+            </a>
+
+            <a href="#" data-nav>
+                Attendance
+            </a>
+
+            <a href="#" data-nav>
+                Notifications
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom" data-el>
+            <strong>Profile Visibility</strong>
+
+            <p>
+                Complete your details to help hiring managers
+                find and invite you to active site projects.
+            </p>
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="header" data-el>
+            <div class="eyebrow">Worker Profile</div>
+
+            <h1>My Profile</h1>
+
+            <p class="subtitle">
+                Keep your professional information updated so companies can find you.
+            </p>
+        </header>
+
+
+        <div class="profile-card" data-el>
+
+            <div class="profile-top">
+
+                <div class="avatar">
+                    {{ request.user.username|first|upper }}
+                </div>
+
+                <div>
+                    <h2>{{ request.user.username }}</h2>
+                    <p>{{ request.user.email }}</p>
+                </div>
+
+            </div>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+
+                <div class="section-title">
+                    Professional Information
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="field">
+
+                        <label for="{{ form.phone_number.id_for_label }}">
+                            Phone Number
+                        </label>
+
+                        {{ form.phone_number }}
+
+                        {% if form.phone_number.errors %}
+                            <div class="field-errors">
+                                {{ form.phone_number.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="{{ form.location.id_for_label }}">
+                            Location
+                        </label>
+
+                        {{ form.location }}
+
+                        {% if form.location.errors %}
+                            <div class="field-errors">
+                                {{ form.location.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="field full">
+
+                        <label for="{{ form.skills.id_for_label }}">
+                            Construction Skills
+                        </label>
+
+                        {{ form.skills }}
+
+                        {% if form.skills.errors %}
+                            <div class="field-errors">
+                                {{ form.skills.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="{{ form.years_of_experience.id_for_label }}">
+                            Years of Experience
+                        </label>
+
+                        {{ form.years_of_experience }}
+
+                        {% if form.years_of_experience.errors %}
+                            <div class="field-errors">
+                                {{ form.years_of_experience.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="{{ form.availability.id_for_label }}">
+                            Availability
+                        </label>
+
+                        {{ form.availability }}
+
+                        {% if form.availability.errors %}
+                            <div class="field-errors">
+                                {{ form.availability.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="field full">
+
+                        <label for="{{ form.bio.id_for_label }}">
+                            About You
+                        </label>
+
+                        {{ form.bio }}
+
+                        {% if form.bio.errors %}
+                            <div class="field-errors">
+                                {{ form.bio.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <button type="submit" class="save-btn">
+                        Save Profile
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <a href="{% url 'logout' %}" class="logout" data-el>
+            Logout of SiteWatch →
+        </a>
+
+    </main>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function(){
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var hasGSAP = typeof gsap !== 'undefined';
+
+    if (!hasGSAP || reduceMotion) return;
+
+    /* ---------- entrance choreography ---------- */
+    gsap.set('#sidebar', { opacity: 0, x: -18 });
+    gsap.set('[data-nav]', { opacity: 0, x: -10 });
+    gsap.set('.header, .profile-card, .logout', { opacity: 0, y: 16 });
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.to('#sidebar', { opacity: 1, x: 0, duration: 0.6 })
+      .to('[data-nav]', { opacity: 1, x: 0, duration: 0.4, stagger: 0.05 }, '-=0.35')
+      .to('.header', { opacity: 1, y: 0, duration: 0.55 }, '-=0.25')
+      .to('.profile-card', { opacity: 1, y: 0, duration: 0.55 }, '-=0.3')
+      .to('.logout', { opacity: 1, y: 0, duration: 0.4 }, '-=0.2');
+})();
+</script>
+
+</body>
+</html>
