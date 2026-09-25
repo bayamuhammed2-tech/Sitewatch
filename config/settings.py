@@ -31,6 +31,8 @@ ALLOWED_HOSTS = [
 # ============================================================
 
 INSTALLED_APPS = [
+    "jazzmin",
+
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -204,3 +206,83 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
+JAZZMIN_SETTINGS = {
+    "site_title": "SiteWatch Admin",
+    "site_header": "SiteWatch",
+    "site_brand": "SiteWatch",
+    "welcome_sign": "Construction Management Dashboard",
+    "copyright": "SiteWatch",
+
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+
+    "order_with_respect_to": [
+        "accounts",
+        "companies",
+        "workers",
+        "projects",
+        "jobs",
+        "attendance",
+        "tasks",
+        "site_reports",
+        "notifications",
+    ],
+
+    "icons": {
+        "accounts": "fas fa-users",
+        "accounts.user": "fas fa-user-shield",
+        "companies.company": "fas fa-building",
+        "workers.workerprofile": "fas fa-hard-hat",
+        "projects.project": "fas fa-building-columns",
+        "jobs.job": "fas fa-briefcase",
+        "jobs.jobapplication": "fas fa-file-signature",
+        "attendance.workerassignment": "fas fa-user-check",
+        "attendance.attendance": "fas fa-calendar-check",
+        "tasks.task": "fas fa-list-check",
+        "site_reports.dailysitereport": "fas fa-file-lines",
+        "notifications.notification": "fas fa-bell",
+    },
+
+    "topmenu_links": [
+        {
+            "name": "SiteWatch",
+            "url": "/",
+            "permissions": ["auth.view_user"],
+        },
+    ],
+
+    "usermenu_links": [
+        {
+            "name": "SiteWatch Dashboard",
+            "url": "/dashboard/",
+            "new_window": False,
+        },
+    ],
+
+    "related_modal_active": True,
+    "show_ui_builder": False,
+}
+
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "darkly",
+    "dark_mode_theme": "darkly",
+
+    "navbar": "navbar-dark",
+    "sidebar": "sidebar-dark-primary",
+
+    "brand_colour": "navbar-dark",
+    "accent": "accent-warning",
+
+    "button_classes": {
+        "primary": "btn-warning",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success",
+    },
+}
