@@ -6,6 +6,9 @@ from accounts import views as account_views
 
 from django.contrib.auth import views as auth_views
 
+admin.site.site_header = "SiteWatch Administration"
+admin.site.site_title = "SiteWatch Admin"
+admin.site.index_title = "Construction Management Dashboard"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -70,6 +73,7 @@ path(
     path("companies/", include("companies.urls")),
     path("workers/", include("workers.urls")),
     path("jobs/", include("jobs.urls")),
+    path("site-reports/", include("site_reports.urls")),
 
     path(
     "notifications/",

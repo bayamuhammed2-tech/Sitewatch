@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="report-page">
+
+```
+<div class="page-header">
+    <div>
+        <span class="eyebrow">SITEWATCH / DAILY REPORT</span>
+        <h1>Create Site Report</h1>
+        <p>Record today's progress, workforce, materials, and site issues.</p>
+    </div>
+
+    <a href="{% url 'site_reports:report_list' %}" class="back-link">
+        ← Back to Reports
+    </a>
+</div>
+
+
+<form method="POST" class="report-form">
+
+    {% csrf_token %}
+
+    <div class="form-section">
+
+        <div class="section-title">
+            <span>01</span>
+            Project Information
+        </div>
+
+        <div class="form-group">
+            <label for="project">Project</label>
+
+            <select name="project" id="project" required>
+                <option value="">Select a project</option>
+
+                {% for project in projects %}
+                    <option value="{{ project.id }}">
+                        {{ project.name }} — {{ project.location }}
+                    </option>
+                {% endfor %}
+
+            </select>
+        </div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label for="report_date">Report Date</label>
+                <input
+                    type="date"
+                    name="report_date"
+                    id="report_date"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="workers_on_site">Workers on Site</label>
+                <input
+                    type="number"
+                    name="workers_on_site"
+                    id="workers_on_site"
+                    min="0"
+                    value="0"
+                    required
+                >
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="form-section">
+
+        <div class="section-title">
+            <span>02</span>
+            Work Progress
+        </div>
+
+        <div class="form-group">
+            <label for="work_completed">Work Completed</label>
+
+            <textarea
+                name="work_completed"
+                id="work_completed"
+                rows="6"
+                placeholder="Describe the work completed today..."
+                required
+            ></textarea>
+        </div>
+
+        <div class="form-group">
+
+            <label for="progress_update">
+                Overall Project Progress (%)
+            </label>
+
+            <div class="progress-input">
+                <input
+                    type="number"
+                    name="progress_update"
+                    id="progress_update"
+                    min="0"
+                    max="100"
+                    value="0"
+                    required
+                >
+
+                <span>%</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="form-section">
+
+        <div class="section-title">
+            <span>03</span>
+            Site Conditions
+        </div>
+
+        <div class="form-group">
+
+            <label for="materials_used">Materials Used</label>
+
+            <textarea
+                name="materials_used"
+                id="materials_used"
+                rows="4"
+                placeholder="Example: 20 bags of cement, 3 tonnes of sand..."
+            ></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="issues">Issues / Delays / Safety Concerns</label>
+
+            <textarea
+                name="issues"
+                id="issues"
+                rows="4"
+                placeholder="Describe any problems, delays, safety concerns, or other issues..."
+            ></textarea>
+
+        </div>
+
+    </div>
+
+
+    <div class="form-section">
+
+        <div class="section-title">
+            <span>04</span>
+            Additional Information
+        </div>
+
+        <div class="form-group">
+
+            <label for="additional_notes">Additional Notes</label>
+
+            <textarea
+                name="additional_notes"
+                id="additional_notes"
+                rows="4"
+                placeholder="Anything else management should know..."
+            ></textarea>
+
+        </div>
+
+    </div>
+
+
+    <div class="form-actions">
+
+        <a
+            href="{% url 'site_reports:report_list' %}"
+            class="btn-secondary"
+        >
+            Cancel
+        </a>
+
+        <button type="submit" class="btn-primary">
+            Submit Site Report
+        </button>
+
+    </div>
+
+</form>
+```
+
+</div>
+
+<style>
+
+.report-page {
+    max-width: 950px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.eyebrow {
+    font-size: 11px;
+    letter-spacing: 2px;
+    opacity: 0.5;
+}
+
+.page-header h1 {
+    margin: 8px 0 5px;
+    font-size: 34px;
+}
+
+.page-header p {
+    margin: 0;
+    opacity: 0.6;
+}
+
+.back-link {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.7;
+    white-space: nowrap;
+}
+
+.back-link:hover {
+    opacity: 1;
+}
+
+.report-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-section {
+    padding: 25px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.section-title span {
+    font-size: 12px;
+    opacity: 0.45;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.2);
+    color: inherit;
+    font-family: inherit;
+    outline: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: rgba(245,158,11,0.7);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.progress-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-input input {
+    max-width: 150px;
+}
+
+.progress-input span {
+    opacity: 0.6;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 5px;
+}
+
+.btn-primary,
+.btn-secondary {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    border: none;
+    background: #f59e0b;
+    color: #111827;
+}
+
+.btn-secondary {
+    border: 1px solid rgba(255,255,255,0.12);
+    color: inherit;
+}
+
+@media (max-width: 700px) {
+
+    .page-header {
+        flex-direction: column;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        text-align: center;
+    }
+
+}
+
+</style>
+
+{% endblock %}

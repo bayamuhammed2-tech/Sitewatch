@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Site Reports</h1>
+        <p>Daily reports from your construction projects.</p>
+    </div>
+
+```
+<a href="{% url 'site_reports:create_report' %}" class="btn-primary">
+    + Create Report
+</a>
+```
+
+</div>
+
+{% if reports %}
+
+<div class="reports-grid">
+
+```
+{% for report in reports %}
+
+<div class="report-card">
+
+    <div class="report-top">
+        <div>
+            <h2>{{ report.project.name }}</h2>
+            <span class="report-date">
+                {{ report.report_date|date:"M d, Y" }}
+            </span>
+        </div>
+
+        <div class="progress">
+            {{ report.progress_update }}%
+        </div>
+    </div>
+
+    <div class="report-info">
+
+        <div>
+            <span class="label">Workers on site</span>
+            <strong>{{ report.workers_on_site }}</strong>
+        </div>
+
+        <div>
+            <span class="label">Submitted by</span>
+            <strong>
+                {% if report.submitted_by %}
+                    {{ report.submitted_by.username }}
+                {% else %}
+                    Unknown
+                {% endif %}
+            </strong>
+        </div>
+
+    </div>
+
+    <div class="report-summary">
+        <span class="label">Work completed</span>
+        <p>{{ report.work_completed|truncatewords:25 }}</p>
+    </div>
+
+    <a
+        href="{% url 'site_reports:report_detail' report.id %}"
+        class="view-report"
+    >
+        View Full Report →
+    </a>
+
+</div>
+
+{% endfor %}
+```
+
+</div>
+
+{% else %}
+
+<div class="empty-state">
+
+```
+<div class="empty-icon">▤</div>
+
+<h2>No Site Reports Yet</h2>
+
+<p>
+    You haven't created any daily site reports for your projects.
+</p>
+
+<a href="{% url 'site_reports:create_report' %}" class="btn-primary">
+    Create Your First Report
+</a>
+```
+
+</div>
+
+{% endif %}
+
+<style>
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.page-header p {
+    margin-top: 6px;
+    opacity: 0.65;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    background: #f59e0b;
+    color: #111827;
+}
+
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.report-card {
+    padding: 22px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.report-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.report-top h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.report-date {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    opacity: 0.6;
+}
+
+.progress {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.report-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.label {
+    display: block;
+    font-size: 12px;
+    opacity: 0.55;
+    margin-bottom: 5px;
+}
+
+.report-info strong {
+    font-size: 15px;
+}
+
+.report-summary {
+    margin-bottom: 20px;
+}
+
+.report-summary p {
+    margin: 5px 0;
+    line-height: 1.6;
+    opacity: 0.8;
+}
+
+.view-report {
+    display: block;
+    text-decoration: none;
+    font-weight: 600;
+    color: #f59e0b;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 16px;
+}
+
+.empty-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.empty-state h2 {
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    opacity: 0.6;
+    margin-bottom: 25px;
+}
+
+</style>
+
+{% endblock %}
